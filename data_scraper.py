@@ -1,4 +1,8 @@
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import requests
 import time
@@ -71,4 +75,13 @@ def extract_full_match(url,driver):
         print(f"Error {e} with URL {url}")
     return match_data
 
-    
+if __name__=='__main__':
+    from pprint import pprint
+
+    TEST_URL="https://www.flashscore.es/partido/futbol/atletico-madrid-jaarqpLQ/fc-barcelona-SKbpVP5K/resumen/estadisticas/general/?mid=A9JgHzZA"
+    driver=webdriver.Chrome()
+    try:
+        result=extract_full_match(TEST_URL,driver)
+        pprint(result,sort_dicts=False)
+    finally:
+        driver.quit()
