@@ -22,7 +22,7 @@ def extract_full_match(url,driver):
         'visiting_team': None,
         'local_goals' : None,
         'visiting_goals' : None,
-        'statistics': None
+        'statistics': {}
     }
     try:
         print(f"Loading match: {url}")
@@ -46,13 +46,29 @@ def extract_full_match(url,driver):
             local_goals,visiting_goals=score.text.split('-')
             match_data['local_goals'],match_data['visiting_goals']=int(local_goals),int(visiting_goals)
         # 4. Statistics
+        contents=soup.select_one('.statisticsContent').find_all('div',recursive=False)
+        for sections in contents:
+            subcontents=sections.select_one('.statisticsSection').find_all('div',recursive=False)
+            for subsections in subcontents:
+                data_lists=subsections.get_text(',',strip=True).split(',')
+        
+                if len(data_lists)==3:
+                    local_value,category,visiting_value=data_lists
+            
+            
+                elif len(data_lists)==5:
+                    local_value,category,visiting_value=data_lists[0],data_lists[2],data_lists[4]
+                else:
+                    continue
+           
+                match_data['statistics'][category]={'local':local_value,'visiting':visiting_value}
 
       
 
 
         
-    except Exception:
-        print(f"Error {Exception} with URL {url}")
+    except Exception as e:
+        print(f"Error {e} with URL {url}")
     return match_data
 
     
