@@ -13,6 +13,13 @@ import os
 # ==========================================================
 # Fase 1 - MATCH EXTRACTION FUNCTION
 # ==========================================================
+def normalize_strings(text):
+    return (text.replace(' ', '_')
+                .replace('(', '')
+                .replace(')', '')
+                .replace('á', 'a')
+                .replace('í', 'i')
+                .replace('ó', 'o'))
 def extract_full_match(url,driver):
     """
     Open a match page on Flashscore and extract the date, teams, score, and the complete statistics table.
@@ -26,7 +33,6 @@ def extract_full_match(url,driver):
         'visiting_team': None,
         'local_goals' : None,
         'visiting_goals' : None,
-        'statistics': {}
     }
     try:
         print(f"Loading match: {url}")
@@ -64,8 +70,9 @@ def extract_full_match(url,driver):
                     local_value,category,visiting_value=data_lists[0],data_lists[2],data_lists[4]
                 else:
                     continue
-           
-                match_data['statistics'][category]={'local':local_value,'visiting':visiting_value}
+                category=normalize_strings(category)  
+                match_data[f"{category}_local"]=local_value
+                match_data[f"{category}_visiting"]=visiting_value
 
       
 
